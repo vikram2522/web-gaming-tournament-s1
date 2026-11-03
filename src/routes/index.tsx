@@ -40,7 +40,7 @@ function Countdown({ to }: { to: string }) {
   useEffect(() => { setNow(Date.now()); const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
   const diff = Math.max(0, new Date(to).getTime() - (now ?? 0));
   const parts = [["Days", 864e5], ["Hrs", 36e5], ["Min", 6e4], ["Sec", 1e3]].map(([l, ms], i, a) => {
-    const v = i === 0 ? Math.floor(diff / (ms as number)) : Math.floor((diff % (a[i - 1][1] as number)) / (ms as number));
+    const v = i === 0 ? Math.floor(diff / (ms as number)) : Math.floor((diff % (a[i - 1]![1] as number)) / (ms as number));
     return [l, now === null ? "--" : String(v).padStart(2, "0")] as const;
   });
   return (
