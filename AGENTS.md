@@ -11,3 +11,4 @@
 
 - Keep tournament fee, deadline and countdown calculation in the browser-safe tournament module so the page and rule tests share one source of truth.
 - Registrations go through server functions in src/lib/registration.functions.ts (admin client + register_team DB function assigns slots atomically); the registrations table and payment-proofs bucket have no public access, so the browser never reads them directly.
+- Organizer review (/organizer) is gated by the ORGANIZER_PASSCODE secret checked inside each organizer server function; why: single organizer, no accounts needed.
