@@ -1,6 +1,11 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import heroAsset from "@/assets/web-gaming-hero.png.asset.json";
+import paymentQr from "@/assets/tournament-payment-qr.jpeg.asset.json";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { QrCode } from "lucide-react";
+import { countdownParts, ENTRY_FEE_RUPEES, MATCH_AT, WHATSAPP_COMMUNITY } from "@/lib/tournament";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -17,7 +22,6 @@ export const Route = createFileRoute("/")({
 });
 
 const TOTAL_SLOTS = 12;
-const MATCH_AT = "2026-11-06T09:50:00Z";
 const PRIZES = [
   { place: "1st Prize", amount: "₹300" },
   { place: "MVP", amount: "₹100" },
@@ -42,17 +46,15 @@ const POINTS: [string, number][] = [
   ["11th–12th", 1],
 ];
 
-type Team = { name: string; tag: string; captain: string; phone: string; players: string[] };
+type Team = { name: string; captain: string; phone: string; players: string[] };
 const KEY = "tournament-teams";
 
 function Countdown({ to }: { to: string }) {
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => { setNow(Date.now()); const t = setInterval(() => setNow(Date.now()), 1000); return () => clearInterval(t); }, []);
-  const diff = Math.max(0, new Date(to).getTime() - (now ?? 0));
-  const parts = [["Days", 864e5], ["Hrs", 36e5], ["Min", 6e4], ["Sec", 1e3]].map(([l, ms], i, a) => {
-    const v = i === 0 ? Math.floor(diff / (ms as number)) : Math.floor((diff % (a[i - 1]![1] as number)) / (ms as number));
-    return [l, now === null ? "--" : String(v).padStart(2, "0")] as const;
-  });
+  const values = countdownParts(to, now ?? Date.parse(to));
+  const parts = ["Days", "Hrs", "Min", "Sec"].map((label, i) =>
+    [label, now === null ? "--" : String(values[i] ?? 0).padStart(2, "0")] as const);
   return (
     <div className="flex gap-3">
       {parts.map(([l, v]) => (
@@ -68,7 +70,7 @@ function Countdown({ to }: { to: string }) {
 function Index() {
   const [teams, setTeams] = useState<Team[]>([]);
   const [tab, setTab] = useState<"register" | "teams" | "rules" | "points">("register");
-  const [form, setForm] = useState<Team>({ name: "", tag: "", captain: "", phone: "", players: ["", "", "", ""] });
+   const [form, setForm] = useState<Team>({ name: "", captain: "", phone: "", players: ["", "", "", ""] });
   const [done, setDone] = useState(false);
 
   useEffect(() => { setTeams(JSON.parse(localStorage.getItem(KEY) || "[]")); }, []);
@@ -79,7 +81,7 @@ function Index() {
     if (left <= 0) return;
     const next = [...teams, { ...form, players: form.players.filter(Boolean) }];
     setTeams(next); localStorage.setItem(KEY, JSON.stringify(next));
-    setForm({ name: "", tag: "", captain: "", phone: "", players: ["", "", "", ""] });
+    setForm({ name: "", captain: "", phone: "", players: ["", "", "", ""] });
     setDone(true); setTab("teams");
   };
 
@@ -122,10 +124,10 @@ function Index() {
       <nav className="sticky top-0 z-10 border-y bg-background/90 backdrop-blur">
         <div className="mx-auto flex max-w-5xl px-5">
           {tabs.map(([k, l]) => (
-            <button key={k} onClick={() => setTab(k)}
+             <Button variant="ghost" key={k} onClick={() => setTab(k)}
               className={`font-display flex-1 border-b-2 py-3 uppercase tracking-wider ${tab === k ? "border-primary text-primary" : "border-transparent text-muted-foreground"}`}>
               {l}
-            </button>
+             </Button>
           ))}
         </div>
       </nav>
@@ -134,10 +136,24 @@ function Index() {
         {tab === "register" && (
           <form onSubmit={submit} className="space-y-4">
             <h2 className="text-2xl font-bold uppercase">Team registration</h2>
+             <div className="flex flex-wrap items-center justify-between gap-3 border-y py-4">
+               <p className="text-lg font-semibold">Entry fee: <span className="text-primary">₹{ENTRY_FEE_RUPEES} per squad</span></p>
+               <Dialog>
+                 <DialogTrigger asChild>
+                   <Button type="button" variant="outline"><QrCode />Open payment QR</Button>
+                 </DialogTrigger>
+                 <DialogContent className="max-w-[min(32rem,calc(100vw-2rem))] max-h-[90dvh] overflow-y-auto">
+                   <DialogHeader>
+                     <DialogTitle>Squad entry payment</DialogTitle>
+                     <DialogDescription>₹{ENTRY_FEE_RUPEES} per squad</DialogDescription>
+                   </DialogHeader>
+                   <img src={paymentQr.url} alt="Tournament entry payment QR code" className="mx-auto h-auto w-full" />
+                 </DialogContent>
+               </Dialog>
+             </div>
             {left <= 0 && <p className="text-destructive">All slots are filled.</p>}
             <div className="grid gap-4 md:grid-cols-2">
               <input required placeholder="Team name" className={input} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-              <input required placeholder="Team tag (e.g. WG)" maxLength={5} className={input} value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value.toUpperCase() })} />
               <input required placeholder="Captain name" className={input} value={form.captain} onChange={(e) => setForm({ ...form, captain: e.target.value })} />
               <input required type="tel" pattern="[0-9+ ]{10,15}" placeholder="WhatsApp number (+91…)" className={input} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             </div>
@@ -149,12 +165,12 @@ function Index() {
               ))}
             </div>
             {form.players.length < 5 && (
-              <button type="button" className="text-primary" onClick={() => setForm({ ...form, players: [...form.players, ""] })}>+ Add substitute</button>
+               <Button variant="link" type="button" className="text-primary" onClick={() => setForm({ ...form, players: [...form.players, ""] })}>+ Add substitute</Button>
             )}
             <p className="text-sm text-muted-foreground">All players must be level 40+. Squad of 4 only — no solo, duo or trio.</p>
-            <button disabled={left <= 0} className="clip-corner font-display w-full bg-primary py-4 text-lg font-bold uppercase text-primary-foreground disabled:opacity-40">
+             <Button type="submit" disabled={left <= 0} className="clip-corner font-display h-auto w-full bg-primary py-4 text-lg font-bold uppercase text-primary-foreground disabled:opacity-40">
               Submit registration
-            </button>
+             </Button>
           </form>
         )}
 
@@ -168,7 +184,7 @@ function Index() {
                 return (
                   <li key={i} className="flex items-center gap-4 bg-card px-4 py-3">
                     <span className="font-display w-8 text-primary">#{String(i + 1).padStart(2, "0")}</span>
-                    {t ? <><span className="font-semibold">{t.name}</span><span className="text-muted-foreground">[{t.tag}]</span></> : <span className="text-muted-foreground">Open slot</span>}
+                     {t ? <span className="font-semibold">{t.name}</span> : <span className="text-muted-foreground">Open slot</span>}
                   </li>
                 );
               })}
@@ -200,7 +216,9 @@ function Index() {
       </section>
 
       <footer className="border-t py-8 text-center">
-        <a href="https://wa.me/910000000000" className="clip-corner font-display inline-block bg-primary px-6 py-3 font-bold uppercase text-primary-foreground">Message on WhatsApp</a>
+         <Button asChild className="clip-corner font-display h-auto px-6 py-3 font-bold uppercase">
+           <a href={WHATSAPP_COMMUNITY} target="_blank" rel="noopener noreferrer">Join WhatsApp community</a>
+         </Button>
       </footer>
     </main>
   );
