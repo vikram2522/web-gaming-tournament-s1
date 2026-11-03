@@ -11,7 +11,7 @@ export const listTeams = createServerFn({ method: "GET" }).handler(async () => {
 });
 
 export const registerTeam = createServerFn({ method: "POST" })
-  .inputValidator((input: unknown) => {
+  .validator((input: unknown) => {
     if (!(input instanceof FormData)) throw new Error("Invalid form");
     const text = (k: string) => String(input.get(k) ?? "").trim();
     const players = input.getAll("players").map((p) => String(p).trim()).filter(Boolean);
