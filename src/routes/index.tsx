@@ -31,6 +31,7 @@ const RULES = [
   "Teams must join the room 10 minutes before match time.",
   "Any hacks, panels or teaming leads to instant disqualification.",
   "Organizer's decision is final in all disputes.",
+  "After completing registration, send a screenshot of your registration to the organizer.",
 ];
 const POINTS: [string, number][] = [
   ["1st · BOOYAH", 10],
