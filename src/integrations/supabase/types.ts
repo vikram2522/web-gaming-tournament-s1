@@ -14,13 +14,61 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      registrations: {
+        Row: {
+          captain: string
+          created_at: string
+          id: string
+          payment_path: string
+          phone: string
+          players: string[]
+          slot_number: number
+          team_name: string
+        }
+        Insert: {
+          captain: string
+          created_at?: string
+          id?: string
+          payment_path: string
+          phone: string
+          players: string[]
+          slot_number: number
+          team_name: string
+        }
+        Update: {
+          captain?: string
+          created_at?: string
+          id?: string
+          payment_path?: string
+          phone?: string
+          players?: string[]
+          slot_number?: number
+          team_name?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      list_teams: {
+        Args: never
+        Returns: {
+          slot_number: number
+          team_name: string
+        }[]
+      }
+      register_team: {
+        Args: {
+          _captain: string
+          _payment_path: string
+          _phone: string
+          _players: string[]
+          _team_name: string
+        }
+        Returns: number
+      }
     }
     Enums: {
       [_ in never]: never
