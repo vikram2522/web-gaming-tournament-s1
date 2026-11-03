@@ -162,13 +162,9 @@ function Index() {
             {done && (
               <div className="space-y-3 border-l-4 border-primary bg-card p-4">
                 <p className="text-lg font-semibold">Registered! {done.team.name} got slot #{String(done.slot).padStart(2, "0")}.</p>
-                <p className="text-muted-foreground">Now send both messages to the organizer on WhatsApp:</p>
-                <div className="grid gap-2 sm:grid-cols-2">
-                  <Button asChild><a target="_blank" rel="noopener noreferrer" href={organizerLink(
-                    `New registration — WEB GAMING\nSlot: #${done.slot}\nTeam: ${done.team.name}\nCaptain: ${done.team.captain}\nWhatsApp: ${done.team.phone}\nPlayers: ${done.team.players.filter(Boolean).join(", ")}`)}>1. Send registration</a></Button>
-                  <Button asChild variant="outline"><a target="_blank" rel="noopener noreferrer" href={organizerLink(
-                    `Payment done — WEB GAMING\nTeam: ${done.team.name} (slot #${done.slot})\nEntry fee: ₹${ENTRY_FEE_RUPEES}\nScreenshot: ${done.paymentUrl}`)}>2. Send payment done</a></Button>
-                </div>
+                <p className="text-muted-foreground">Your ₹{ENTRY_FEE_RUPEES} payment screenshot was checked and accepted. Now send your details and screenshot to the organizer on WhatsApp:</p>
+                <Button asChild className="w-full"><a target="_blank" rel="noopener noreferrer" href={organizerLink(
+                  `New registration — WEB GAMING\nSlot: #${done.slot}\nTeam: ${done.team.name}\nCaptain: ${done.team.captain}\nCaptain WhatsApp number: ${done.team.phone}\nPlayers: ${done.team.players.filter(Boolean).join(", ")}\nEntry fee paid: ₹${ENTRY_FEE_RUPEES}\nPayment screenshot: ${done.paymentUrl}`)}>Send registration + payment screenshot to organizer</a></Button>
               </div>
             )}
              <div className="flex flex-wrap items-center justify-between gap-3 border-y py-4">

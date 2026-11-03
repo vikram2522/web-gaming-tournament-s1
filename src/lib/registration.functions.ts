@@ -25,6 +25,11 @@ export const registerTeam = createServerFn({ method: "POST" })
     return data;
   })
   .handler(async ({ data }) => {
+    const { checkPaymentScreenshot } = await import("./payment-check.server");
+    let check;
+    try { check = await checkPaymentScreenshot(data.file); }
+    catch (e) { console.error("payment check failed", e); throw new Error("Could not check the screenshot right now, try again"); }
+    if (!check.ok) throw new Error(`Payment not accepted: ${check.reason || "upload a real ₹40 payment screenshot"}`);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const path = `${crypto.randomUUID()}.${ALLOWED[data.file.type as keyof typeof ALLOWED]}`;
     const up = await supabaseAdmin.storage.from("payment-proofs").upload(path, data.file, { contentType: data.file.type });
