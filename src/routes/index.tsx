@@ -27,7 +27,6 @@ const PRIZES = [
   { place: "MVP", amount: "₹100" },
 ];
 const RULES = [
-  "Every player's account level must be above 40.",
   "Teams must join the room 10 minutes before match time.",
   "Any hacks, panels or teaming leads to instant disqualification.",
   "Organizer's decision is final in all disputes.",
