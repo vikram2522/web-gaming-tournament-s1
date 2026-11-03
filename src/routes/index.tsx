@@ -96,7 +96,7 @@ function Index() {
       const res = await register({ data: fd });
       window.__lovableEvents?.track?.("project.registration_submitted", { result: "success", player_count: playerCount });
       window.__lovableEvents?.track?.("project.payment_screenshot_uploaded", { file_type: file.type, size_kb: Math.round(file.size / 1024) });
-      window.__lovableEvents?.track?.("project.team_slot_assigned", { slot_number: res.slot, slots_filled: res.slot });
+      window.__lovableEvents?.track?.("project.team_slot_assigned", { slot_number: res.slot });
       setDone({ slot: res.slot, team: form, paymentUrl: res.paymentUrl });
       setForm({ name: "", captain: "", phone: "", players: ["", "", "", ""] });
       setFile(null); (e.target as HTMLFormElement).reset();
