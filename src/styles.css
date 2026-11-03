@@ -30,22 +30,22 @@
 
 :root {
   --radius: 0.25rem;
-  --background: oklch(0.14 0.01 250);
-  --foreground: oklch(0.96 0.01 110);
-  --card: oklch(0.19 0.012 250);
-  --card-foreground: oklch(0.96 0.01 110);
-  --primary: oklch(0.9 0.2 125);
-  --primary-foreground: oklch(0.15 0.02 250);
-  --secondary: oklch(0.25 0.015 250);
-  --secondary-foreground: oklch(0.96 0.01 110);
-  --muted: oklch(0.23 0.012 250);
-  --muted-foreground: oklch(0.68 0.02 250);
-  --accent: oklch(0.72 0.19 50);
-  --accent-foreground: oklch(0.15 0.02 250);
-  --destructive: oklch(0.65 0.22 25);
-  --border: oklch(0.3 0.015 250);
-  --input: oklch(0.3 0.015 250);
-  --ring: oklch(0.9 0.2 125);
+  --background: oklch(0.09 0.012 25);
+  --foreground: oklch(0.96 0.005 25);
+  --card: oklch(0.15 0.015 25);
+  --card-foreground: oklch(0.96 0.005 25);
+  --primary: oklch(0.58 0.23 27);
+  --primary-foreground: oklch(0.98 0 0);
+  --secondary: oklch(0.22 0.02 25);
+  --secondary-foreground: oklch(0.96 0.005 25);
+  --muted: oklch(0.2 0.015 25);
+  --muted-foreground: oklch(0.7 0.02 25);
+  --accent: oklch(0.62 0.24 27);
+  --accent-foreground: oklch(0.98 0 0);
+  --destructive: oklch(0.55 0.22 27);
+  --border: oklch(0.28 0.02 25);
+  --input: oklch(0.28 0.02 25);
+  --ring: oklch(0.58 0.23 27);
 }
 
 @layer base {
