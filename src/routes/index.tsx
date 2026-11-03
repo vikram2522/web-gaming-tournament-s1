@@ -91,13 +91,18 @@ function Index() {
     fd.set("name", form.name); fd.set("captain", form.captain); fd.set("phone", form.phone);
     form.players.filter(Boolean).forEach((p) => fd.append("players", p));
     fd.set("payment", file);
+    const playerCount = form.players.filter(Boolean).length;
     try {
       const res = await register({ data: fd });
+      window.__lovableEvents?.track?.("project.registration_submitted", { result: "success", player_count: playerCount });
+      window.__lovableEvents?.track?.("project.payment_screenshot_uploaded", { file_type: file.type, size_kb: Math.round(file.size / 1024) });
+      window.__lovableEvents?.track?.("project.team_slot_assigned", { slot_number: res.slot });
       setDone({ slot: res.slot, team: form, paymentUrl: res.paymentUrl });
       setForm({ name: "", captain: "", phone: "", players: ["", "", "", ""] });
       setFile(null); (e.target as HTMLFormElement).reset();
       setTeams(await fetchTeams());
     } catch (err) {
+      window.__lovableEvents?.track?.("project.registration_submitted", { result: "failed", player_count: playerCount });
       setError(err instanceof Error ? err.message : "Registration failed");
     } finally { setBusy(false); }
   };

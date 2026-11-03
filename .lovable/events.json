@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "events": {
+    "project.payment_screenshot_uploaded": {
+      "event_schema_version": 1,
+      "description": "A squad's entry-fee payment screenshot was uploaded as part of a successful registration.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "file_type",
+          "size_kb"
+        ],
+        "properties": {
+          "file_type": {
+            "type": "string"
+          },
+          "size_kb": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "project.registration_submitted": {
+      "event_schema_version": 1,
+      "description": "A squad submitted the registration form; result says whether it succeeded or failed.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "result",
+          "player_count"
+        ],
+        "properties": {
+          "result": {
+            "type": "string",
+            "enum": [
+              "success",
+              "failed"
+            ]
+          },
+          "player_count": {
+            "type": "integer"
+          }
+        }
+      }
+    },
+    "project.team_slot_assigned": {
+      "event_schema_version": 1,
+      "description": "A registered squad was automatically placed into a tournament slot.",
+      "privacy": {
+        "contains_pii": false,
+        "purpose": "product_analytics"
+      },
+      "properties_schema": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "slot_number"
+        ],
+        "properties": {
+          "slot_number": {
+            "type": "integer"
+          }
+        }
+      }
+    }
+  }
+}
