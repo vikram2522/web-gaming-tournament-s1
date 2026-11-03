@@ -1,0 +1,2 @@
+ALTER TABLE public.registrations ADD COLUMN payment_status text NOT NULL DEFAULT 'pending' CHECK (payment_status IN ('pending','verified','follow_up'));
+ALTER TABLE public.registrations ADD COLUMN organizer_note text;

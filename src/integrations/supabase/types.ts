@@ -19,7 +19,9 @@ export type Database = {
           captain: string
           created_at: string
           id: string
+          organizer_note: string | null
           payment_path: string
+          payment_status: string
           phone: string
           players: string[]
           slot_number: number
@@ -29,7 +31,9 @@ export type Database = {
           captain: string
           created_at?: string
           id?: string
+          organizer_note?: string | null
           payment_path: string
+          payment_status?: string
           phone: string
           players: string[]
           slot_number: number
@@ -39,7 +43,9 @@ export type Database = {
           captain?: string
           created_at?: string
           id?: string
+          organizer_note?: string | null
           payment_path?: string
+          payment_status?: string
           phone?: string
           players?: string[]
           slot_number?: number
