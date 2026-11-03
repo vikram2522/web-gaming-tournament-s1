@@ -154,7 +154,18 @@ function Index() {
         {tab === "register" && (
           <form onSubmit={submit} className="space-y-4">
             <h2 className="text-2xl font-bold uppercase">Team registration</h2>
-            {done && <p className="border-l-4 border-primary bg-card p-3">Registered! The organizer will contact you on WhatsApp.</p>}
+            {done && (
+              <div className="space-y-3 border-l-4 border-primary bg-card p-4">
+                <p className="text-lg font-semibold">Registered! {done.team.name} got slot #{String(done.slot).padStart(2, "0")}.</p>
+                <p className="text-muted-foreground">Now send both messages to the organizer on WhatsApp:</p>
+                <div className="grid gap-2 sm:grid-cols-2">
+                  <Button asChild><a target="_blank" rel="noopener noreferrer" href={organizerLink(
+                    `New registration — WEB GAMING\nSlot: #${done.slot}\nTeam: ${done.team.name}\nCaptain: ${done.team.captain}\nWhatsApp: ${done.team.phone}\nPlayers: ${done.team.players.filter(Boolean).join(", ")}`)}>1. Send registration</a></Button>
+                  <Button asChild variant="outline"><a target="_blank" rel="noopener noreferrer" href={organizerLink(
+                    `Payment done — WEB GAMING\nTeam: ${done.team.name} (slot #${done.slot})\nEntry fee: ₹${ENTRY_FEE_RUPEES}\nScreenshot: ${done.paymentUrl}`)}>2. Send payment done</a></Button>
+                </div>
+              </div>
+            )}
              <div className="flex flex-wrap items-center justify-between gap-3 border-y py-4">
                <p className="text-lg font-semibold">Entry fee: <span className="text-primary">₹{ENTRY_FEE_RUPEES} per squad</span></p>
                <Dialog>
@@ -186,12 +197,35 @@ function Index() {
             {form.players.length < 5 && (
                <Button variant="link" type="button" className="text-primary" onClick={() => setForm({ ...form, players: [...form.players, ""] })}>+ Add substitute</Button>
             )}
+            <label className="block space-y-2 border border-dashed border-primary bg-card p-4">
+              <span className="block text-lg font-semibold uppercase">Payment screenshot <span className="text-primary">*</span></span>
+              <span className="block text-sm text-muted-foreground">Upload the screenshot of your ₹{ENTRY_FEE_RUPEES} entry fee payment (PNG, JPG or WEBP, under 5 MB).</span>
+              <input required type="file" accept="image/png,image/jpeg,image/webp" aria-label="Payment screenshot"
+                className="block w-full text-base file:mr-3 file:border-0 file:bg-primary file:px-4 file:py-2 file:font-semibold file:text-primary-foreground"
+                onChange={(e) => setFile(e.target.files?.[0] ?? null)} />
+            </label>
+            {error && <p className="border-l-4 border-destructive bg-card p-3 text-destructive">{error}</p>}
             <a href={WHATSAPP_COMMUNITY} target="_blank" rel="noopener noreferrer" className="block bg-card p-3 text-center text-lg font-semibold text-primary underline underline-offset-4">ANY UPDATES JOIN WHATSAPP COMMUNITY</a>
-             <Button type="submit" disabled={left <= 0} className="clip-corner font-display h-auto w-full bg-primary py-4 text-lg font-bold uppercase text-primary-foreground disabled:opacity-40">
-              Submit registration
+             <Button type="submit" disabled={left <= 0 || busy} className="clip-corner font-display h-auto w-full bg-primary py-4 text-lg font-bold uppercase text-primary-foreground disabled:opacity-40">
+              {busy ? "Submitting…" : "Submit registration"}
              </Button>
           </form>
         )}
+
+        {tab === "teams" && (
+          <div>
+            <h2 className="mb-4 text-2xl font-bold uppercase">Teams · {teams.length}/{TOTAL_SLOTS}</h2>
+            <ol className="grid gap-3 md:grid-cols-2">
+              {Array.from({ length: TOTAL_SLOTS }, (_, i) => i + 1).map((s) => (
+                <li key={s} className="clip-corner flex items-center gap-4 bg-card p-4 text-lg">
+                  <span className="font-display text-primary">#{String(s).padStart(2, "0")}</span>
+                  {bySlot.get(s) ?? <span className="text-muted-foreground">Open slot</span>}
+                </li>
+              ))}
+            </ol>
+          </div>
+        )}
+
 
 
         {tab === "rules" && (
