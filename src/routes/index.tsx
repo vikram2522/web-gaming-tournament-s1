@@ -1,14 +1,14 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import hero from "@/assets/hero.jpg";
+import heroAsset from "@/assets/web-gaming-hero.png.asset.json";
 
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Paradox Cup S1 — Tournament Registration" },
-      { name: "description", content: "Register your squad for Paradox Cup Season 1. Prize pool, slots, rules and points table." },
-      { property: "og:title", content: "Paradox Cup S1 — Tournament Registration" },
-      { property: "og:description", content: "Register your squad for Paradox Cup Season 1." },
+      { title: "WEB GAMING — Tournament Registration" },
+      { name: "description", content: "Register your squad for the WEB GAMING tournament. ₹300 first prize, 12 slots, rules and points table." },
+      { property: "og:title", content: "WEB GAMING — Tournament Registration" },
+      { property: "og:description", content: "Register your squad for the WEB GAMING tournament. 12 slots, ₹300 first prize." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -16,21 +16,31 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const TOTAL_SLOTS = 25;
-const OPENS_AT = new Date(Date.now() + 2 * 864e5).toISOString();
+const TOTAL_SLOTS = 12;
+const MATCH_AT = "2026-11-06T09:50:00Z";
 const PRIZES = [
-  { place: "1st", amount: "₹5,000" },
-  { place: "2nd", amount: "₹3,000" },
-  { place: "3rd", amount: "₹2,000" },
+  { place: "1st Prize", amount: "₹300" },
+  { place: "MVP", amount: "₹100" },
 ];
 const RULES = [
-  "Squad of 4 players, 1 optional substitute.",
-  "Mobile devices only. Emulators and iPads are not allowed.",
+  "Squad of 4 players only — solo, duo and trio are not allowed.",
+  "Every player's account level must be above 40.",
   "Teams must join the room 10 minutes before match time.",
-  "Any hacks or teaming leads to instant disqualification.",
+  "Any hacks, panels or teaming leads to instant disqualification.",
   "Organizer's decision is final in all disputes.",
 ];
-const POINTS = [[1, 15], [2, 12], [3, 10], [4, 8], [5, 6], [6, 4], [7, 2], [8, 1]];
+const POINTS: [string, number][] = [
+  ["1st · BOOYAH", 12],
+  ["2nd", 9],
+  ["3rd", 8],
+  ["4th", 7],
+  ["5th", 6],
+  ["6th", 5],
+  ["7th", 4],
+  ["8th", 3],
+  ["9th–10th", 2],
+  ["11th–12th", 1],
+];
 
 type Team = { name: string; tag: string; captain: string; phone: string; players: string[] };
 const KEY = "tournament-teams";
@@ -79,18 +89,18 @@ function Index() {
   return (
     <main className="min-h-screen">
       <section className="relative">
-        <img src={hero} alt="Squad on a ridge at dusk" className="h-[60vh] w-full object-cover" />
+        <img src={heroAsset.url} alt="WEB GAMING spider logo on black and red smoke" width={1536} height={1024} className="h-[60vh] w-full object-cover" />
         <div className="hero-fade absolute inset-0" />
         <div className="absolute inset-x-0 bottom-0 mx-auto max-w-5xl px-5 pb-8">
-          <p className="text-sm uppercase tracking-[0.3em] text-accent">Paradox Esports presents</p>
-          <h1 className="mt-2 text-5xl font-bold uppercase md:text-7xl">Paradox Cup <span className="text-primary">S1</span></h1>
-          <p className="mt-3 mb-5 text-lg text-muted-foreground">Registration opens in</p>
-          <Countdown to={OPENS_AT} />
+          <p className="text-sm uppercase tracking-[0.3em] text-primary">Squad registration</p>
+          <h1 className="mt-2 text-5xl font-bold uppercase md:text-7xl">WEB GAMING</h1>
+          <p className="mt-3 mb-5 text-lg text-muted-foreground">Match begins in</p>
+          <Countdown to={MATCH_AT} />
         </div>
       </section>
 
       <section className="mx-auto grid max-w-5xl grid-cols-3 gap-3 px-5 py-6">
-        {[["Prize pool", "₹10,000"], ["Slots left", `${left}/${TOTAL_SLOTS}`], ["Mode", "Squad · TPP"]].map(([k, v]) => (
+        {[["Prize pool", "₹400"], ["Slots left", `${left}/${TOTAL_SLOTS}`], ["Mode", "Squad · TPP"]].map(([k, v]) => (
           <div key={k} className="clip-corner bg-card p-4">
             <div className="text-xs uppercase tracking-widest text-muted-foreground">{k}</div>
             <div className="font-display text-xl font-bold md:text-2xl">{v}</div>
@@ -99,11 +109,11 @@ function Index() {
       </section>
 
       <section className="mx-auto max-w-5xl px-5 pb-6">
-        <div className="grid grid-cols-3 gap-3">
+        <div className="grid grid-cols-2 gap-3">
           {PRIZES.map((p, i) => (
-            <div key={p.place} className={`clip-corner p-4 text-center ${i === 0 ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>
+            <div key={p.place} className={`clip-corner p-5 text-center ${i === 0 ? "bg-primary text-primary-foreground" : "bg-secondary"}`}>
               <div className="text-sm uppercase tracking-widest opacity-80">{p.place}</div>
-              <div className="font-display text-2xl font-bold">{p.amount}</div>
+              <div className="font-display text-3xl font-bold">{p.amount}</div>
             </div>
           ))}
         </div>
@@ -127,21 +137,21 @@ function Index() {
             {left <= 0 && <p className="text-destructive">All slots are filled.</p>}
             <div className="grid gap-4 md:grid-cols-2">
               <input required placeholder="Team name" className={input} value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} />
-              <input required placeholder="Team tag (e.g. PDX)" maxLength={5} className={input} value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value.toUpperCase() })} />
+              <input required placeholder="Team tag (e.g. WG)" maxLength={5} className={input} value={form.tag} onChange={(e) => setForm({ ...form, tag: e.target.value.toUpperCase() })} />
               <input required placeholder="Captain name" className={input} value={form.captain} onChange={(e) => setForm({ ...form, captain: e.target.value })} />
               <input required type="tel" pattern="[0-9+ ]{10,15}" placeholder="WhatsApp number (+91…)" className={input} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             </div>
             <h3 className="pt-2 text-lg uppercase text-muted-foreground">Players in-game names</h3>
             <div className="grid gap-3 md:grid-cols-2">
               {form.players.map((p, i) => (
-                <input key={i} required={i < 4} placeholder={i < 4 ? `Player ${i + 1}` : "Substitute"} className={input} value={p}
+                <input key={i} required placeholder={`Player ${i + 1}`} className={input} value={p}
                   onChange={(e) => { const pl = [...form.players]; pl[i] = e.target.value; setForm({ ...form, players: pl }); }} />
               ))}
             </div>
             {form.players.length < 5 && (
               <button type="button" className="text-primary" onClick={() => setForm({ ...form, players: [...form.players, ""] })}>+ Add substitute</button>
             )}
-            <p className="text-sm text-muted-foreground">Your contact details go only to the organizer.</p>
+            <p className="text-sm text-muted-foreground">All players must be level 40+. Squad of 4 only — no solo, duo or trio.</p>
             <button disabled={left <= 0} className="clip-corner font-display w-full bg-primary py-4 text-lg font-bold uppercase text-primary-foreground disabled:opacity-40">
               Submit registration
             </button>
@@ -169,7 +179,7 @@ function Index() {
         {tab === "rules" && (
           <ol className="space-y-3">
             {RULES.map((r, i) => (
-              <li key={i} className="flex gap-4 bg-card p-4 text-lg"><span className="font-display text-accent">{i + 1}</span>{r}</li>
+              <li key={i} className="flex gap-4 bg-card p-4 text-lg"><span className="font-display text-primary">{i + 1}</span>{r}</li>
             ))}
           </ol>
         )}
@@ -178,18 +188,19 @@ function Index() {
           <div className="grid gap-6 md:grid-cols-2">
             <table className="w-full bg-card text-lg">
               <thead><tr className="text-left text-muted-foreground"><th className="p-3">Placement</th><th className="p-3">Points</th></tr></thead>
-              <tbody>{POINTS.map(([p, pts]) => <tr key={p} className="border-t"><td className="p-3">#{p}</td><td className="p-3 text-primary">{pts}</td></tr>)}</tbody>
+              <tbody>{POINTS.map(([p, pts]) => <tr key={p} className="border-t"><td className="p-3">{p}</td><td className="p-3 text-primary">{pts}</td></tr>)}</tbody>
             </table>
             <div className="clip-corner bg-card p-6">
-              <div className="text-muted-foreground uppercase tracking-widest">Per finish</div>
-              <div className="font-display text-5xl font-bold text-accent">1 pt</div>
+              <div className="text-muted-foreground uppercase tracking-widest">Per kill</div>
+              <div className="font-display text-5xl font-bold text-primary">1 pt</div>
+              <p className="mt-3 text-sm text-muted-foreground">Position points follow your finishing position — BOOYAH gives the full 12.</p>
             </div>
           </div>
         )}
       </section>
 
       <footer className="border-t py-8 text-center">
-        <a href="https://wa.me/910000000000" className="clip-corner font-display inline-block bg-accent px-6 py-3 font-bold uppercase text-accent-foreground">Message on WhatsApp</a>
+        <a href="https://wa.me/910000000000" className="clip-corner font-display inline-block bg-primary px-6 py-3 font-bold uppercase text-primary-foreground">Message on WhatsApp</a>
       </footer>
     </main>
   );
