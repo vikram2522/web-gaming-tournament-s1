@@ -27,7 +27,6 @@ const PRIZES = [
   { place: "MVP", amount: "₹100" },
 ];
 const RULES = [
-  "Every player's account level must be above 40.",
   "Teams must join the room 10 minutes before match time.",
   "Any hacks, panels or teaming leads to instant disqualification.",
   "Organizer's decision is final in all disputes.",
@@ -168,7 +167,7 @@ function Index() {
             {form.players.length < 5 && (
                <Button variant="link" type="button" className="text-primary" onClick={() => setForm({ ...form, players: [...form.players, ""] })}>+ Add substitute</Button>
             )}
-            <p className="text-sm text-muted-foreground">All players must be level 40+. Squad of 4 only — no solo, duo or trio.</p>
+            <a href={WHATSAPP_COMMUNITY} target="_blank" rel="noopener noreferrer" className="block bg-card p-3 text-center text-lg font-semibold text-primary underline underline-offset-4">ANY UPDATES JOIN WHATSAPP COMMUNITY</a>
              <Button type="submit" disabled={left <= 0} className="clip-corner font-display h-auto w-full bg-primary py-4 text-lg font-bold uppercase text-primary-foreground disabled:opacity-40">
               Submit registration
              </Button>
