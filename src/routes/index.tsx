@@ -69,7 +69,7 @@ function Countdown({ to }: { to: string }) {
 
 function Index() {
   const [teams, setTeams] = useState<Team[]>([]);
-  const [tab, setTab] = useState<"register" | "teams" | "rules" | "points">("register");
+  const [tab, setTab] = useState<"register" | "rules" | "points">("register");
    const [form, setForm] = useState<Team>({ name: "", captain: "", phone: "", players: ["", "", "", ""] });
   const [done, setDone] = useState(false);
 
@@ -82,11 +82,11 @@ function Index() {
     const next = [...teams, { ...form, players: form.players.filter(Boolean) }];
     setTeams(next); localStorage.setItem(KEY, JSON.stringify(next));
     setForm({ name: "", captain: "", phone: "", players: ["", "", "", ""] });
-    setDone(true); setTab("teams");
+    setDone(true);
   };
 
   const input = "w-full bg-muted border border-input px-3 py-2.5 text-lg outline-none focus:border-ring";
-  const tabs = [["register", "Register"], ["teams", "Teams"], ["rules", "Rules"], ["points", "Points"]] as const;
+  const tabs = [["register", "Register"], ["rules", "Rules"], ["points", "Points"]] as const;
 
   return (
     <main className="min-h-screen">
@@ -136,6 +136,7 @@ function Index() {
         {tab === "register" && (
           <form onSubmit={submit} className="space-y-4">
             <h2 className="text-2xl font-bold uppercase">Team registration</h2>
+            {done && <p className="border-l-4 border-primary bg-card p-3">Registered! The organizer will contact you on WhatsApp.</p>}
              <div className="flex flex-wrap items-center justify-between gap-3 border-y py-4">
                <p className="text-lg font-semibold">Entry fee: <span className="text-primary">₹{ENTRY_FEE_RUPEES} per squad</span></p>
                <Dialog>
@@ -174,23 +175,6 @@ function Index() {
           </form>
         )}
 
-        {tab === "teams" && (
-          <div>
-            {done && <p className="mb-4 border-l-4 border-primary bg-card p-3">Registered! The organizer will contact you on WhatsApp.</p>}
-            <h2 className="mb-4 text-2xl font-bold uppercase">Slot list</h2>
-            <ol className="space-y-2">
-              {Array.from({ length: TOTAL_SLOTS }).map((_, i) => {
-                const t = teams[i];
-                return (
-                  <li key={i} className="flex items-center gap-4 bg-card px-4 py-3">
-                    <span className="font-display w-8 text-primary">#{String(i + 1).padStart(2, "0")}</span>
-                     {t ? <span className="font-semibold">{t.name}</span> : <span className="text-muted-foreground">Open slot</span>}
-                  </li>
-                );
-              })}
-            </ol>
-          </div>
-        )}
 
         {tab === "rules" && (
           <ol className="space-y-3">
