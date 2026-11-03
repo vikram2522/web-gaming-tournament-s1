@@ -27,14 +27,13 @@ const PRIZES = [
   { place: "MVP", amount: "₹100" },
 ];
 const RULES = [
-  "Squad of 4 players only — solo, duo and trio are not allowed.",
   "Every player's account level must be above 40.",
   "Teams must join the room 10 minutes before match time.",
   "Any hacks, panels or teaming leads to instant disqualification.",
   "Organizer's decision is final in all disputes.",
 ];
 const POINTS: [string, number][] = [
-  ["1st · BOOYAH", 12],
+  ["1st · BOOYAH", 10],
   ["2nd", 9],
   ["3rd", 8],
   ["4th", 7],
@@ -209,7 +208,7 @@ function Index() {
             <div className="clip-corner bg-card p-6">
               <div className="text-muted-foreground uppercase tracking-widest">Per kill</div>
               <div className="font-display text-5xl font-bold text-primary">1 pt</div>
-              <p className="mt-3 text-sm text-muted-foreground">Position points follow your finishing position — BOOYAH gives the full 12.</p>
+              <p className="mt-3 text-sm text-muted-foreground">Position points follow your finishing position — BOOYAH gives the full 10.</p>
             </div>
           </div>
         )}
