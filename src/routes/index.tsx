@@ -6,7 +6,7 @@ import paymentQr from "@/assets/tournament-payment-qr.jpeg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { QrCode } from "lucide-react";
-import { countdownParts, ENTRY_FEE_RUPEES, MATCH_AT, organizerLink, WHATSAPP_COMMUNITY } from "@/lib/tournament";
+import { countdownParts, ENTRY_FEE_RUPEES, MATCH_AT, organizerLink, ORGANIZER_CHAT, WHATSAPP_COMMUNITY } from "@/lib/tournament";
 import { listTeams, registerTeam } from "@/lib/registration.functions";
 
 export const Route = createFileRoute("/")({
@@ -108,7 +108,7 @@ function Index() {
   };
 
   const input = "w-full bg-muted border border-input px-3 py-2.5 text-lg outline-none focus:border-ring";
-  const tabs = [["register", "Register"], ["teams", "Teams"], ["rules", "Rules"], ["points", "Points"]] as const;
+  const tabs = [["register", "Register"], ["rules", "Rules"], ["points", "Points"]] as const;
   const bySlot = new Map(teams.map((t) => [t.slot_number, t.team_name]));
 
   return (
@@ -161,7 +161,7 @@ function Index() {
             <h2 className="text-2xl font-bold uppercase">Team registration</h2>
             {done && (
               <div className="space-y-3 border-l-4 border-primary bg-card p-4">
-                <p className="text-lg font-semibold">Registered! {done.team.name} got slot #{String(done.slot).padStart(2, "0")}.</p>
+                <p className="text-lg font-semibold">Registered! {done.team.name} has been received.</p>
                 <p className="text-muted-foreground">Your ₹{ENTRY_FEE_RUPEES} payment screenshot was checked and accepted. Now send your details and screenshot to the organizer on WhatsApp:</p>
                 <Button asChild className="w-full"><a target="_blank" rel="noopener noreferrer" href={organizerLink(
                   `New registration — WEB GAMING\nSlot: #${done.slot}\nTeam: ${done.team.name}\nCaptain: ${done.team.captain}\nCaptain WhatsApp number: ${done.team.phone}\nPlayers: ${done.team.players.filter(Boolean).join(", ")}\nEntry fee paid: ₹${ENTRY_FEE_RUPEES}\nPayment screenshot: ${done.paymentUrl}`)}>Send registration + payment screenshot to organizer</a></Button>
@@ -210,24 +210,11 @@ function Index() {
              <Button type="submit" disabled={left <= 0 || busy} className="clip-corner font-display h-auto w-full bg-primary py-4 text-lg font-bold uppercase text-primary-foreground disabled:opacity-40">
               {busy ? "Submitting…" : "Submit registration"}
              </Button>
+            <Button asChild variant="outline" className="h-auto w-full py-4 text-lg font-bold uppercase">
+              <a href={ORGANIZER_CHAT} target="_blank" rel="noopener noreferrer">Send to organizer on WhatsApp</a>
+            </Button>
           </form>
         )}
-
-        {tab === "teams" && (
-          <div>
-            <h2 className="mb-4 text-2xl font-bold uppercase">Teams · {teams.length}/{TOTAL_SLOTS}</h2>
-            <ol className="grid gap-3 md:grid-cols-2">
-              {Array.from({ length: TOTAL_SLOTS }, (_, i) => i + 1).map((s) => (
-                <li key={s} className="clip-corner flex items-center gap-4 bg-card p-4 text-lg">
-                  <span className="font-display text-primary">#{String(s).padStart(2, "0")}</span>
-                  {bySlot.get(s) ?? <span className="text-muted-foreground">Open slot</span>}
-                </li>
-              ))}
-            </ol>
-          </div>
-        )}
-
-
 
         {tab === "rules" && (
           <ol className="space-y-3">
