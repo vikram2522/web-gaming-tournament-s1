@@ -6,7 +6,7 @@ import paymentQr from "@/assets/tournament-payment-qr.jpeg.asset.json";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { QrCode } from "lucide-react";
-import { countdownParts, ENTRY_FEE_RUPEES, MATCH_AT, organizerLink, ORGANIZER_CHAT, WHATSAPP_COMMUNITY } from "@/lib/tournament";
+import { countdownParts, ENTRY_FEE_RUPEES, MATCH_AT, organizerLink, WHATSAPP_COMMUNITY } from "@/lib/tournament";
 import { listTeams, registerTeam } from "@/lib/registration.functions";
 
 export const Route = createFileRoute("/")({
@@ -162,9 +162,7 @@ function Index() {
             {done && (
               <div className="space-y-3 border-l-4 border-primary bg-card p-4">
                 <p className="text-lg font-semibold">Registered! {done.team.name} has been received.</p>
-                <p className="text-muted-foreground">Your ₹{ENTRY_FEE_RUPEES} payment screenshot was checked and accepted. Now send your details and screenshot to the organizer on WhatsApp:</p>
-                <Button asChild className="w-full"><a target="_blank" rel="noopener noreferrer" href={organizerLink(
-                  `New registration — WEB GAMING\nSlot: #${done.slot}\nTeam: ${done.team.name}\nCaptain: ${done.team.captain}\nCaptain WhatsApp number: ${done.team.phone}\nPlayers: ${done.team.players.filter(Boolean).join(", ")}\nEntry fee paid: ₹${ENTRY_FEE_RUPEES}\nPayment screenshot: ${done.paymentUrl}`)}>Send registration + payment screenshot to organizer</a></Button>
+                <p className="text-muted-foreground">Your ₹{ENTRY_FEE_RUPEES} payment screenshot was checked and accepted. Use the button below the form to send your details and screenshot to the organizer on WhatsApp.</p>
               </div>
             )}
              <div className="flex flex-wrap items-center justify-between gap-3 border-y py-4">
@@ -210,8 +208,13 @@ function Index() {
              <Button type="submit" disabled={left <= 0 || busy} className="clip-corner font-display h-auto w-full bg-primary py-4 text-lg font-bold uppercase text-primary-foreground disabled:opacity-40">
               {busy ? "Submitting…" : "Submit registration"}
              </Button>
-            <Button asChild variant="outline" className="h-auto w-full py-4 text-lg font-bold uppercase">
-              <a href={ORGANIZER_CHAT} target="_blank" rel="noopener noreferrer">Send to organizer on WhatsApp</a>
+            <Button asChild={!!done} disabled={!done} variant="outline" className="h-auto w-full py-4 text-lg font-bold uppercase disabled:opacity-40">
+              {done ? (
+                <a target="_blank" rel="noopener noreferrer" href={organizerLink(
+                  `New registration — WEB GAMING\nSlot: #${done.slot}\nTeam: ${done.team.name}\nCaptain: ${done.team.captain}\nCaptain WhatsApp number: ${done.team.phone}\nPlayers: ${done.team.players.filter(Boolean).join(", ")}\nEntry fee paid: ₹${ENTRY_FEE_RUPEES}\nPayment screenshot: ${done.paymentUrl}`)}>Send the registration details and payment screenshot to organizer</a>
+              ) : (
+                <span>Send the registration details and payment screenshot to organizer</span>
+              )}
             </Button>
           </form>
         )}
