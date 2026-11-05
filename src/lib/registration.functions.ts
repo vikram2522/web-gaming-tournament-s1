@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { validatePlayerIds } from "./tournament";
 
 const ALLOWED = { "image/png": "png", "image/jpeg": "jpg", "image/webp": "webp" } as const;
 const MAX_BYTES = 5 * 1024 * 1024;
