@@ -9,3 +9,5 @@
 - [x] Remove the Teams tab and its slot list.- [x] Shared Teams tab with automatic slot assignment.
 - [x] Required payment screenshot upload.
 - [x] Prefilled WhatsApp messages to organizer (registration + payment done).
+- [ ] Add a required in-game ID for every player to registration (form, database, Telegram alert, organizer page).
+- [ ] Send the uploaded payment screenshot to Telegram after a successful registration.
