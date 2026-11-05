@@ -41,6 +41,13 @@ export const registerTeam = createServerFn({ method: "POST" })
       await supabaseAdmin.storage.from("payment-proofs").remove([path]);
       throw new Error(error.message.includes("slots") ? "All slots are filled" : "Registration failed");
     }
+    const { notifyTelegram } = await import('./notify-telegram.server');
+    await notifyTelegram({
+      team_name: data.name,
+      player_name: data.captain,
+      game_id: 'Not provided',
+      whatsapp_number: data.phone,
+    });
     const signed = await supabaseAdmin.storage.from("payment-proofs").createSignedUrl(path, 60 * 60 * 24 * 30);
     return { slot: slot as number, paymentUrl: signed.data?.signedUrl ?? "" };
   });
