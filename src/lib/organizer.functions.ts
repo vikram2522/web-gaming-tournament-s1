@@ -16,7 +16,7 @@ export const listRegistrations = createServerFn({ method: "POST" })
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { data: rows, error } = await supabaseAdmin
       .from("registrations")
-      .select("id, slot_number, team_name, captain, phone, players, payment_path, payment_status, organizer_note, created_at")
+      .select("id, slot_number, team_name, captain, phone, players, player_ids, payment_path, payment_status, organizer_note, created_at")
       .order("slot_number");
     if (error) throw new Error("Could not load registrations");
     const paths = (rows ?? []).map((r) => r.payment_path);

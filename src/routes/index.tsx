@@ -47,7 +47,7 @@ const POINTS: [string, number][] = [
   ["11th–12th", 1],
 ];
 
-type Team = { name: string; captain: string; phone: string; players: string[] };
+type Team = { name: string; captain: string; phone: string; players: string[]; playerIds: string[] };
 
 function Countdown({ to }: { to: string }) {
   const [now, setNow] = useState<number | null>(null);
@@ -72,7 +72,7 @@ type Done = { slot: number; team: Team; paymentUrl: string };
 function Index() {
   const [teams, setTeams] = useState<{ slot_number: number; team_name: string }[]>([]);
   const [tab, setTab] = useState<"register" | "teams" | "rules" | "points">("register");
-  const [form, setForm] = useState<Team>({ name: "", captain: "", phone: "", players: ["", "", "", ""] });
+  const [form, setForm] = useState<Team>({ name: "", captain: "", phone: "", players: ["", "", "", ""], playerIds: ["", "", "", ""] });
   const [file, setFile] = useState<File | null>(null);
   const [done, setDone] = useState<Done | null>(null);
   const [error, setError] = useState("");
@@ -90,6 +90,7 @@ function Index() {
     const fd = new FormData();
     fd.set("name", form.name); fd.set("captain", form.captain); fd.set("phone", form.phone);
     form.players.filter(Boolean).forEach((p) => fd.append("players", p));
+    form.players.forEach((p, i) => { if (p.trim()) fd.append("player_ids", form.playerIds[i] ?? ""); });
     fd.set("payment", file);
     const playerCount = form.players.filter(Boolean).length;
     try {
@@ -98,7 +99,7 @@ function Index() {
       window.__lovableEvents?.track?.("project.payment_screenshot_uploaded", { file_type: file.type, size_kb: Math.round(file.size / 1024) });
       window.__lovableEvents?.track?.("project.team_slot_assigned", { slot_number: res.slot });
       setDone({ slot: res.slot, team: form, paymentUrl: res.paymentUrl });
-      setForm({ name: "", captain: "", phone: "", players: ["", "", "", ""] });
+      setForm({ name: "", captain: "", phone: "", players: ["", "", "", ""], playerIds: ["", "", "", ""] });
       setFile(null); (e.target as HTMLFormElement).reset();
       setTeams(await fetchTeams());
     } catch (err) {
@@ -186,15 +187,19 @@ function Index() {
               <input required placeholder="Captain name" className={input} value={form.captain} onChange={(e) => setForm({ ...form, captain: e.target.value })} />
               <input required type="tel" pattern="[0-9+ ]{10,15}" placeholder="WhatsApp number (+91…)" className={input} value={form.phone} onChange={(e) => setForm({ ...form, phone: e.target.value })} />
             </div>
-            <h3 className="pt-2 text-lg uppercase text-muted-foreground">Players in-game names</h3>
+            <h3 className="pt-2 text-lg uppercase text-muted-foreground">Players — in-game name and ID</h3>
             <div className="grid gap-3 md:grid-cols-2">
               {form.players.map((p, i) => (
-                <input key={i} required placeholder={`Player ${i + 1}`} className={input} value={p}
-                  onChange={(e) => { const pl = [...form.players]; pl[i] = e.target.value; setForm({ ...form, players: pl }); }} />
+                <div key={i} className="space-y-2 border border-input bg-card p-3">
+                  <input required placeholder={`Player ${i + 1} in-game name`} className={input} value={p}
+                    onChange={(e) => { const pl = [...form.players]; pl[i] = e.target.value; setForm({ ...form, players: pl }); }} />
+                  <input required placeholder={`Player ${i + 1} in-game ID`} className={input} value={form.playerIds[i] ?? ""}
+                    onChange={(e) => { const ids = [...form.playerIds]; ids[i] = e.target.value; setForm({ ...form, playerIds: ids }); }} />
+                </div>
               ))}
             </div>
             {form.players.length < 5 && (
-               <Button variant="link" type="button" className="text-primary" onClick={() => setForm({ ...form, players: [...form.players, ""] })}>+ Add substitute</Button>
+               <Button variant="link" type="button" className="text-primary" onClick={() => setForm({ ...form, players: [...form.players, ""], playerIds: [...form.playerIds, ""] })}>+ Add substitute</Button>
             )}
             <label className="block space-y-2 border border-dashed border-primary bg-card p-4">
               <span className="block text-lg font-semibold uppercase">Payment screenshot <span className="text-primary">*</span></span>
@@ -211,7 +216,7 @@ function Index() {
             <Button asChild={!!done} disabled={!done} variant="outline" className="h-auto w-full py-4 text-lg font-bold uppercase disabled:opacity-40">
               {done ? (
                 <a target="_blank" rel="noopener noreferrer" href={organizerLink(
-                  `New registration — WEB GAMING\nSlot: #${done.slot}\nTeam: ${done.team.name}\nCaptain: ${done.team.captain}\nCaptain WhatsApp number: ${done.team.phone}\nPlayers: ${done.team.players.filter(Boolean).join(", ")}\nEntry fee paid: ₹${ENTRY_FEE_RUPEES}\nPayment screenshot: ${done.paymentUrl}`)}>Send the registration details and payment screenshot to organizer</a>
+                  `New registration — WEB GAMING\nSlot: #${done.slot}\nTeam: ${done.team.name}\nCaptain: ${done.team.captain}\nCaptain WhatsApp number: ${done.team.phone}\nPlayers with in-game IDs: ${done.team.players.map((p, i) => `${p} — ID: ${done.team.playerIds[i] ?? "—"}`).join(", ")}\nEntry fee paid: ₹${ENTRY_FEE_RUPEES}\nPayment screenshot: ${done.paymentUrl}`)}>Send the registration details and payment screenshot to organizer</a>
               ) : (
                 <span>Send the registration details and payment screenshot to organizer</span>
               )}

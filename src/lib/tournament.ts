@@ -12,3 +12,13 @@ export function countdownParts(to: string, now: number) {
 export function organizerLink(message: string) {
   return `https://wa.me/${ORGANIZER_WHATSAPP}?text=${encodeURIComponent(message)}`;
 }
+
+// One required in-game ID per player, same order as the player names.
+export function validatePlayerIds(ids: string[], players: string[]): string[] {
+  if (players.length < 4 || players.length > 5) throw new Error("Enter 4 or 5 players");
+  const clean = ids.map((id) => String(id ?? "").trim());
+  if (clean.length !== players.length || clean.some((id) => !id)) {
+    throw new Error("Enter the in-game ID for every player");
+  }
+  return clean;
+}

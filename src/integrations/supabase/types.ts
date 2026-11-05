@@ -23,6 +23,7 @@ export type Database = {
           payment_path: string
           payment_status: string
           phone: string
+          player_ids: string[] | null
           players: string[]
           slot_number: number
           team_name: string
@@ -35,6 +36,7 @@ export type Database = {
           payment_path: string
           payment_status?: string
           phone: string
+          player_ids?: string[] | null
           players: string[]
           slot_number: number
           team_name: string
@@ -47,6 +49,7 @@ export type Database = {
           payment_path?: string
           payment_status?: string
           phone?: string
+          player_ids?: string[] | null
           players?: string[]
           slot_number?: number
           team_name?: string
@@ -65,16 +68,28 @@ export type Database = {
           team_name: string
         }[]
       }
-      register_team: {
-        Args: {
-          _captain: string
-          _payment_path: string
-          _phone: string
-          _players: string[]
-          _team_name: string
-        }
-        Returns: number
-      }
+      register_team:
+        | {
+            Args: {
+              _captain: string
+              _payment_path: string
+              _phone: string
+              _players: string[]
+              _team_name: string
+            }
+            Returns: number
+          }
+        | {
+            Args: {
+              _captain: string
+              _payment_path: string
+              _phone: string
+              _player_ids?: string[]
+              _players: string[]
+              _team_name: string
+            }
+            Returns: number
+          }
     }
     Enums: {
       [_ in never]: never

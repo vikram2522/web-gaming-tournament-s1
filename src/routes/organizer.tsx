@@ -82,7 +82,7 @@ function Organizer() {
               </span>
             </div>
             <p className="text-sm text-muted-foreground">Captain {r.captain} · {r.phone} · {new Date(r.created_at).toLocaleString()}</p>
-            <p className="text-sm">Players: {r.players.join(", ")}</p>
+            <p className="text-sm">Players: {r.players.map((p, i) => `${p} (ID: ${r.player_ids?.[i] ?? "—"})`).join(", ")}</p>
             {r.organizer_note && <p className="text-sm text-destructive">Note: {r.organizer_note}</p>}
             <div className="flex flex-wrap gap-2">
               {r.proofUrl && <Button asChild size="sm" variant="outline"><a href={r.proofUrl} target="_blank" rel="noreferrer">View payment</a></Button>}

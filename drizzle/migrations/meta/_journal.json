@@ -15,6 +15,13 @@
       "when": 1793737404589,
       "tag": "0001_payment_status",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1793852124650,
+      "tag": "0002_add_player_ids",
+      "breakpoints": true
     }
   ]
 }
