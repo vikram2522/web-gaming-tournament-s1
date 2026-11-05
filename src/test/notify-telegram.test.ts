@@ -16,7 +16,9 @@ describe('Telegram registration alerts', () => {
     const request = vi.fn().mockResolvedValue(Response.json({ ok: true }));
     vi.stubGlobal('fetch', request);
     expect(await notifyTelegram(registration)).toBe(true);
-    expect(JSON.parse(request.mock.calls[0][1].body)).toEqual({ chat_id: 'test-chat', text: registrationMessage(registration) });
+    const call = request.mock.calls[0];
+    if (!call) throw new Error('Telegram request was not sent');
+    expect(JSON.parse(call[1].body)).toEqual({ chat_id: 'test-chat', text: registrationMessage(registration) });
   });
 
   it('does not undo registration when Telegram is unavailable', async () => {
