@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>YS Admin Panel</title>
+<style>
+body{background:#0f0f0f;color:#fff;font-family:sans-serif;padding:15px}
+input,select,button{width:100%;padding:12px;margin:6px 0;border-radius:8px;border:none}
+button{background:#ffcc00;font-weight:bold}
+.card{background:#1e1e1e;padding:12px;border-radius:10px;margin:10px 0}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<h2>🎮 YS Tournament - Admin</h2>
+<div id="login">
+<input id="pass" type="password" placeholder="Enter Admin Password">
+<button onclick="login()">Login</button>
+<p>Password: YS2026</p>
+</div>
+
+<div id="panel" class="hidden">
+<h3>Dashboard</h3>
+<div class="card">Total Players: <b id="count">0</b></div>
+
+<h3>Add Player / Result</h3>
+<input id="team" placeholder="Team Name">
+<input id="player" placeholder="Player Name">
+<input id="kills" type="number" placeholder="Kills">
+<input id="points" type="number" placeholder="Points">
+<button onclick="addPlayer()">Add Player</button>
+
+<h3>Players List</h3>
+<div id="list"></div>
+
+<h3>Match Settings</h3>
+<input id="room" placeholder="Room ID">
+<input id="rpass" placeholder="Room Password">
+<button onclick="saveRoom()">Save Room Details</button>
+<p id="roomShow"></p>
+
+<button onclick="clearAll()" style="background:red;color:white">Clear All Data</button>
+</div>
+
+<script>
+function login(){
+ if(document.getElementById('pass').value==='YS2026'){
+  document.getElementById('login').classList.add('hidden');
+  document.getElementById('panel').classList.remove('hidden');
+  show();
+ } else { alert('Wrong Password'); }
+}
+function getData(){ return JSON.parse(localStorage.getItem('ys_players')||'[]'); }
+function addPlayer(){
+ let d=getData();
+ d.push({team:document.getElementById('team').value, player:document.getElementById('player').value, kills:document.getElementById('kills').value, points:document.getElementById('points').value});
+ localStorage.setItem('ys_players', JSON.stringify(d));
+ show(); alert('Added!');
+}
+function show(){
+ let d=getData();
+ document.getElementById('count').innerText=d.length;
+ document.getElementById('list').innerHTML=d.map((p,i)=>`<div class="card">${p.team} - ${p.player}<br>Kills: ${p.kills} | Points: ${p.points}</div>`).join('');
+ document.getElementById('roomShow').innerText='Room: '+(localStorage.getItem('ys_room')||'Not Set');
+}
+function saveRoom(){
+ localStorage.setItem('ys_room', document.getElementById('room').value+' / '+document.getElementById('rpass').value);
+ alert('Room Saved!'); show();
+}
+function clearAll(){ if(confirm('Clear all?')){ localStorage.clear(); show(); } }
+</script>
+</body>
+</html>
