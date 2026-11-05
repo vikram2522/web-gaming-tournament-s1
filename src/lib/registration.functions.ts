@@ -42,13 +42,20 @@ export const registerTeam = createServerFn({ method: "POST" })
       await supabaseAdmin.storage.from("payment-proofs").remove([path]);
       throw new Error(error.message.includes("slots") ? "All slots are filled" : "Registration failed");
     }
-    const { notifyTelegram } = await import('./notify-telegram.server');
+    const signed = await supabaseAdmin.storage.from("payment-proofs").createSignedUrl(path, 60 * 60 * 24 * 30);
+    const paymentUrl = signed.data?.signedUrl ?? "";
+    const { notifyTelegram, sendTelegramPhoto } = await import('./notify-telegram.server');
     await notifyTelegram({
       team_name: data.name,
       player_name: data.captain,
       game_id: data.players.map((p, i) => `${p}: ${data.playerIds[i]}`).join(", "),
       whatsapp_number: data.phone,
     });
-    const signed = await supabaseAdmin.storage.from("payment-proofs").createSignedUrl(path, 60 * 60 * 24 * 30);
-    return { slot: slot as number, paymentUrl: signed.data?.signedUrl ?? "" };
+    if (paymentUrl) {
+      await sendTelegramPhoto(
+        paymentUrl,
+        `Payment screenshot — WEB GAMING\nTeam: ${data.name}, Player: ${data.captain}, WhatsApp: ${data.phone}`,
+      );
+    }
+    return { slot: slot as number, paymentUrl };
   });
